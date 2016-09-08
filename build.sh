@@ -110,11 +110,13 @@ function changed() {
 }
 
 function get_changed_applications() {
+    declare changed_application_files
     declare -A local_changed_dirs
-    IFS=' ' read -r -a changed_files_array <<< "$(echo filter_changed_files $(get_changed_files))"
+
+    IFS=' ' read -r -a changed_application_files <<< "$(filter_application_files $(get_changed_files))"
     unset IFS
 
-    for f in "${changed_files_array[@]}"; do
+    for f in "${changed_application_files[@]}"; do
         if ! [[ -e "$f" ]]; then
             continue
         fi
@@ -127,9 +129,9 @@ function get_changed_applications() {
     echo ${local_changed_dirs[@]}
 }
 
-function filter_changed_files() {
-    local $changed_files=$1
-    echo changed_files_we_need="$(echo "$changed_files" | grep -P 'Dockerfile|entrypoint.sh')"
+function filter_application_files() {
+    local changed_files=$1
+    echo "$changed_files" | grep -P 'Dockerfile|entrypoint.sh'
 
 }
 function get_changed_files() {
