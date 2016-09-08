@@ -36,7 +36,7 @@ function build () {
     local name=${path%%\/*}
     local context=$(readlink -f $path)
     local context_name=$(basename ${context})
-    local dockerfile=`readlink -f $name/Dockerfile`
+    local dockerfile=`readlink -f $context/Dockerfile`
     local version=`grep -P 'ENV VERSION[^\n]*' $dockerfile | sed -e 's/ENV VERSION //' || return "0"`
     local variant=
     local tag=
