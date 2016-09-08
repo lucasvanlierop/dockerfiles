@@ -137,6 +137,22 @@ function get_changed_files() {
     echo $(validate_diff --name-only)
 }
 
+function all() {
+    declare dockerfiles
+    IFS=' ' read -r -a dockerfiles <<< "$(find "${DIR}" -name "Dockerfile" | tr '\n' ' ')"
+    unset IFS
+
+    for f in "${dockerfiles[@]}"; do
+        if ! [[ -e "$f" ]]; then
+            continue
+        fi
+
+        variant_dir=$(dirname "$f")
+        variant_path="$(echo "$variant_dir" | sed -e "s#${DIR}/##")"
+        build "$variant_path"
+    done
+}
+
 function one() {
     local f=$1
     build "$f"
