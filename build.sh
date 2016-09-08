@@ -32,10 +32,9 @@ validate_diff() {
 }
 
 function build () {
-
     local path="$1"
     local name=${path%%\/*}
-    local context=$(readlink -f $name)
+    local context=$(readlink -f $path)
     local context_name=$(basename ${context})
     local dockerfile=`readlink -f $name/Dockerfile`
     local version=`grep -P 'ENV VERSION[^\n]*' $dockerfile | sed -e 's/ENV VERSION //' || return "0"`
