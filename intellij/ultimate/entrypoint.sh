@@ -3,7 +3,7 @@
 set -e
 
 function dump-logo() {
-    base64 /usr/share/git-cola/icons/git.svg
+    base64 /opt/intellij/bin/idea.png
     exit 0
 }
 

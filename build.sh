@@ -59,10 +59,22 @@ function build () {
 
     (
     set -x
-    docker build -t $REPO_PREFIX/${base}:${tag} ${build_dir}
+
+    local image_full="$REPO_PREFIX/${base}:${tag}"
+    docker build -t ${image_full} ${build_dir}
+
+    docker run --rm ${image_full} dump-logo | base64 -i --decode > /tmp/logo
+    local mime_type=$(grep "$(mimetype -b /tmp/logo)" /etc/mime.types | awk '{print $1}')
+
+
+    if [[ -z $(echo "${mime_type}" | grep "image/") ]]; then
+        echo "Logo is not valid, mimetype was ${mime_type}"
+        exit 1
+    fi
+
 
     if [[ $PUSH == true ]]; then
-        docker push $REPO_PREFIX/${base}:${tag}
+        docker push ${image_full}
     fi
     )
 
