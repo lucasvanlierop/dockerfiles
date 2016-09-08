@@ -57,30 +57,27 @@ function build () {
        tag="${version}"
     fi
 
-    (
-    set -x
-
     local image_full="$REPO_PREFIX/${base}:${tag}"
     docker build -t ${image_full} ${build_dir}
 
-    docker run --rm ${image_full} dump-logo | base64 -i --decode > /tmp/logo
-    local mime_type=$(grep "$(mimetype -b /tmp/logo)" /etc/mime.types | awk '{print $1}')
-
-
-    if [[ -z $(echo "${mime_type}" | grep "image/") ]]; then
-        echo "Logo is not valid, mimetype was ${mime_type}"
-        exit 1
-    fi
-
+    assert_container_dumps_logo $image_full
 
     if [[ $PUSH == true ]]; then
         docker push ${image_full}
     fi
-    )
 
     echo "Successfully built ${base}:${tag} with context ${build_dir}"
 }
 
+function assert_container_dumps_logo() {
+    local image_full=$1
+    docker run --rm ${image_full} dump-logo | base64 -i --decode > /tmp/logo
+    local mime_type=$(grep "$(mimetype -b /tmp/logo)" /etc/mime.types | awk '{print $1}')
+    if [[ -z $(echo "${mime_type}" | grep "image/") ]]; then
+        echo "Logo is not valid, mimetype was ${mime_type}"
+        exit 1
+    fi
+}
 
 function build_multiple() {
     local files=$1
