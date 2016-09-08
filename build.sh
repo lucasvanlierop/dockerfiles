@@ -32,15 +32,17 @@ validate_diff() {
 }
 
 function build () {
+
     local path="$1"
     local name=${path%%\/*}
-    local context=$(readlink -f $application)
+    local context=$(readlink -f $name)
     local context_name=$(basename ${context})
-    local dockerfile=`readlink -f $application/Dockerfile`
+    local dockerfile=`readlink -f $name/Dockerfile`
     local version=`grep -P 'ENV VERSION[^\n]*' $dockerfile | sed -e 's/ENV VERSION //' || return "0"`
     local variant=
     local tag=
     local image_with_tag
+
     # Set variant if there is one (e.g. IntelliJ Ultimate is a variant of IntelliJ)
     if [[ "$context_name" != "$name" ]]; then
         variant="${context_name}"
