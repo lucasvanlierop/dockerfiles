@@ -1,8 +1,8 @@
-FROM java:7
+FROM java:8
 
 MAINTAINER Lucas van Lierop <lucas@vanlierop.org>
 
-ENV VERSION 10.0.4
+ENV VERSION 2016.1.2
 
 WORKDIR /opt
 
